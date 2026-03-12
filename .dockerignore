@@ -1,0 +1,17 @@
+data/
+outputs/
+sources/textbooks/
+sources/articles/
+sources/training_logs/
+.git/
+.claude/
+__pycache__/
+*.pyc
+*.egg-info/
+.venv/
+venv/
+notebooks/
+tests/
+.github/
+*.md
+!README.md

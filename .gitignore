@@ -12,20 +12,20 @@ venv/
 env/
 .venv/
 
-# Data (large files - don't commit)
-data/extracted/
-data/chunks/
-data/generated/
-data/validated/
-data/training/
+# Data (tracked by DVC)
+/data/extracted/
+/data/chunks/
+/data/generated/
+/data/validated/
+/data/training/
 
 # Source materials (copyrighted - don't commit)
-sources/textbooks/
-sources/articles/
-sources/training_logs/
+/sources/textbooks/
+/sources/articles/
+/sources/training_logs/
 
 # Training outputs
-outputs/
+/outputs/
 *.pt
 *.bin
 *.safetensors

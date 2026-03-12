@@ -1,0 +1,72 @@
+stages:
+  extract:
+    cmd: python scripts/01_extract/extract_runner.py
+    deps:
+      - scripts/01_extract/
+      - scripts/utils/text_cleaning.py
+      - scripts/utils/source_registry.py
+      - scripts/utils/training_log_parser.py
+      - sources/registry.yaml
+    outs:
+      - data/extracted/
+
+  chunk:
+    cmd: python scripts/02_chunk_text.py
+    deps:
+      - scripts/02_chunk_text.py
+      - data/extracted/
+    outs:
+      - data/chunks/
+
+  generate_qa:
+    cmd: python scripts/03_generate_qa.py
+    deps:
+      - scripts/03_generate_qa.py
+      - data/chunks/all_chunks.jsonl
+      - configs/generation_config.yaml
+    outs:
+      - data/generated/qa_pairs/
+
+  generate_conversations:
+    cmd: python scripts/04_generate_conversations.py
+    deps:
+      - scripts/04_generate_conversations.py
+      - data/chunks/all_chunks.jsonl
+      - configs/generation_config.yaml
+    outs:
+      - data/generated/conversations/
+
+  generate_completions:
+    cmd: python scripts/05_generate_completions.py
+    deps:
+      - scripts/05_generate_completions.py
+      - data/chunks/all_chunks.jsonl
+      - configs/generation_config.yaml
+    outs:
+      - data/generated/completions/
+
+  generate_classification:
+    cmd: python scripts/06_generate_classification.py
+    deps:
+      - scripts/06_generate_classification.py
+      - data/chunks/all_chunks.jsonl
+      - configs/generation_config.yaml
+    outs:
+      - data/generated/classification/
+
+  validate:
+    cmd: python scripts/07_validate_dataset.py
+    deps:
+      - scripts/07_validate_dataset.py
+      - data/generated/
+    outs:
+      - data/validated/
+
+  prepare_training:
+    cmd: python scripts/08_prepare_training.py
+    deps:
+      - scripts/08_prepare_training.py
+      - data/validated/
+      - configs/training_config.yaml
+    outs:
+      - data/training/

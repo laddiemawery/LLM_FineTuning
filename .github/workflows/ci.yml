@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install ruff
+        run: pip install ruff
+      - name: Lint
+        run: ruff check scripts/ training/ tests/
+      - name: Format check
+        run: ruff format --check scripts/ training/ tests/
+
+  test:
+    runs-on: ubuntu-latest
+    needs: lint
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+      - name: Run tests
+        run: pytest tests/ -v --tb=short --cov=scripts --cov-report=term-missing
+      - name: Upload coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: htmlcov/
+
+  validate-pipeline:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: Validate registry
+        run: |
+          python -c "
+          import sys; sys.path.insert(0, '.')
+          from scripts.utils.source_registry import SourceRegistry
+          registry = SourceRegistry()
+          sources = registry.get_all()
+          print(f'Registry loaded: {len(sources)} source(s)')
+          for s in sources:
+              print(f'  - {s.id} ({s.type})')
+          "
+      - name: Validate configs
+        run: |
+          python -c "
+          import sys; sys.path.insert(0, '.')
+          from scripts.utils.config import Config
+          config = Config()
+          assert config.generation_config, 'generation_config is empty'
+          assert config.training_config, 'training_config is empty'
+          assert config.topics, 'No topics defined'
+          print(f'Generation config: {len(config.generation_config)} keys')
+          print(f'Training config: {len(config.training_config)} keys')
+          print(f'Topics: {len(config.topics)}')
+          print('All configs valid.')
+          "
+      - name: Verify imports
+        run: |
+          python -c "
+          import sys; sys.path.insert(0, '.')
+          from scripts.utils.text_cleaning import TextCleaner
+          from scripts.utils.source_registry import SourceRegistry
+          from scripts.utils.training_log_parser import TrainingLogParser
+          from scripts.utils.config import Config
+          print('All core modules import successfully.')
+          "
