@@ -1,0 +1,117 @@
+# Dataset generation configuration
+
+llm:
+  model: "claude-sonnet-4-20250514"
+  max_tokens: 2048
+  temperature: 0.7
+
+# Number of examples to generate per chunk, per format
+generation:
+  qa_pairs_per_chunk: 5
+  conversations_per_chunk: 2
+  completions_per_chunk: 3
+  classifications_per_chunk: 3
+
+# Domain-specific topics for classification
+topics:
+  - exercise_science
+  - nutrition
+  - strength_conditioning
+  - cardiovascular_training
+  - flexibility_mobility
+  - anatomy_physiology
+  - biomechanics
+  - program_design
+  - injury_prevention
+  - physical_therapy
+  - occupational_therapy
+  - recovery_regeneration
+  - sports_psychology
+  - assessment_testing
+
+# Prompt templates for each generation type
+prompts:
+  qa_system: |
+    You are an expert health and fitness educator creating high-quality training data
+    for a language model. Generate question-answer pairs that cover factual recall,
+    conceptual understanding, and practical application. Answers should be thorough,
+    accurate, and cite specific principles from the source material.
+
+  qa_instruction: |
+    Based on the following text from a health/fitness resource, generate {n} diverse
+    question-answer pairs. Include a mix of:
+    - Factual recall questions (what, when, how much)
+    - Conceptual understanding questions (why, how does this work)
+    - Application questions (how would you apply this with a client)
+    - Scenario-based questions (given this situation, what would you recommend)
+
+    Format each pair as JSON: {{"instruction": "...", "response": "..."}}
+
+    Source text:
+    {text}
+
+  conversation_system: |
+    You are creating realistic multi-turn coaching conversations between a fitness
+    professional and a client/athlete. The conversations should demonstrate proper
+    coaching methodology, evidence-based recommendations, and progressive dialogue.
+
+  conversation_instruction: |
+    Based on the following text, generate {n} realistic multi-turn conversations
+    (3-6 turns each) between a fitness professional and a client. The conversations
+    should naturally incorporate the knowledge from the source material.
+
+    Format as JSON: {{"messages": [{{"role": "user", "content": "..."}}, {{"role": "assistant", "content": "..."}}]}}
+
+    Source text:
+    {text}
+
+  completion_system: |
+    You are creating text completion examples for health and fitness education.
+    The completions should demonstrate deep domain knowledge and clear explanation.
+
+  completion_instruction: |
+    Based on the following text, generate {n} prompt-completion pairs where the
+    prompt starts explaining a concept and the completion finishes it with
+    accurate, detailed information.
+
+    Format as JSON: {{"prompt": "...", "completion": "..."}}
+
+    Source text:
+    {text}
+
+  classification_system: |
+    You are creating labeled text classification examples for health and fitness content.
+
+  classification_instruction: |
+    Based on the following text, generate {n} text classification examples.
+    Each example should be a passage of 1-3 sentences with a topic label from:
+    {topics}
+
+    Format as JSON: {{"text": "...", "label": "..."}}
+
+    Source text:
+    {text}
+
+  # Special prompts for training log data
+  training_log_qa_instruction: |
+    Based on the following training log data, generate {n} question-answer pairs about:
+    - Program analysis (volume, intensity, frequency patterns)
+    - Progressive overload assessment
+    - Recovery recommendations
+    - Exercise selection rationale
+    - Potential adjustments and periodization
+
+    Format each pair as JSON: {{"instruction": "...", "response": "..."}}
+
+    Training log data:
+    {text}
+
+  training_log_conversation_instruction: |
+    Based on the following training log data, generate {n} realistic conversations
+    between a strength coach and an athlete reviewing the training log. The coach
+    should analyze patterns, provide feedback, and suggest adjustments.
+
+    Format as JSON: {{"messages": [{{"role": "user", "content": "..."}}, {{"role": "assistant", "content": "..."}}]}}
+
+    Training log data:
+    {text}

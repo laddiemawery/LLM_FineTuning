@@ -1,0 +1,29 @@
+# Text extraction
+ebooklib>=0.18
+beautifulsoup4>=4.12
+pymupdf>=1.24
+trafilatura>=1.8
+pytesseract>=0.3.10
+Pillow>=10.0
+lxml>=5.0
+
+# Structured data
+openpyxl>=3.1
+pandas>=2.2
+
+# Dataset generation
+anthropic>=0.40
+tiktoken>=0.7
+
+# Training
+datasets>=2.20
+transformers>=4.44
+peft>=0.12
+bitsandbytes>=0.43
+accelerate>=0.33
+torch>=2.2
+
+# Utilities
+pyyaml>=6.0
+tqdm>=4.66
+rapidfuzz>=3.6

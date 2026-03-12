@@ -1,0 +1,14 @@
+sources:
+  - id: cscs_exam_prep
+    type: epub
+    path: textbooks/CSCS_Exam_Prep_2019.epub
+    title: "CSCS Certified Strength & Conditioning Specialist Exam Prep (2019 Edition)"
+    topics:
+      - strength_conditioning
+      - exercise_science
+      - nutrition
+      - anatomy
+      - biomechanics
+      - program_design
+    priority: high
+    notes: "Primary textbook covering NSCA CSCS certification material"
